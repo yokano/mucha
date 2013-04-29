@@ -95,20 +95,19 @@ var LoginForm = Class.create({
 			return;
 		}
 		
-		console.log(navigator.userAgent);
 		$.ajax('/backlog', {
 			data: {
 				space: space,
 				id: id,
 				pass: pass,
-				method: 'get_projects',
-				agent: navigator.userAgent
+				method: 'get_projects'
 			},
+			dataType: 'json',
 			error: function() {
 				console.log('error');
 			},
-			success: function() {
-				console.log('success');
+			success: function(data) {
+				console.log(data);
 			}
 		});
 	}
