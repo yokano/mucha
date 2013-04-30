@@ -31,6 +31,7 @@ var Game = Class.create(Core, {
 	initialize: function() {
 		Core.call(this, 320, 480);
 		this.preload('/mucha/background.png');
+		this.preload('/mucha/small_window.png');
 	},
 	
 	/**
@@ -54,7 +55,55 @@ var Game = Class.create(Core, {
 			method: 'get_projects'
 		});
 		
-		var loginForm = new LoginForm();
+		this.test = 'hello'
+		
+		this.smallMessage({
+			message: 'メッセージ出力テスト',
+			callback: function() {
+				console.log(this.test);
+			}
+		});
+	},
+	
+	/**
+	 * 小さいウィンドウでメッセージを表示
+	 * @memberof Game
+	 * @method
+	 * @param {Object} config
+	 * {
+	 *     message: '表示するメッセージ'
+	 *     form: '表示する HTML フォームの id'
+	 *     confirm: true/false (はい、いいえを表示するかどうか)
+	 * }
+	 */
+	smallMessage: function(config) {
+		var background = new Sprite();
+		background.image = this.assets['/mucha/small_window.png'];
+		background.width = background.image.width;
+		background.height = background.image.height;
+		
+		var label = new Label();
+		label.color = 'white';
+		label.text = config.message;
+		label.font = '20px sans-serif'
+		label.x = 20;
+		label.y = 20;
+		
+		var messageWindow = new Group();
+		messageWindow.width = background.width;
+		messageWindow.height = background.height;
+		messageWindow.x = (game.width - messageWindow.width) / 2;
+		messageWindow.y = (game.height - messageWindow.height) - 10;
+		
+		messageWindow.addChild(background);
+		messageWindow.addChild(label);
+		game.currentScene.addChild(messageWindow);
+		
+		// タッチイベント
+		messageWindow.addEventListener('touchstart', function() {
+			game.currentScene.removeChild(messageWindow);
+			config.callback.call(game);
+		});
 	}
 });
 
@@ -88,6 +137,7 @@ var LoginForm = Class.create({
 	 * @param {String} space Backlogスペース名
 	 * @param {String} id ログインID
 	 * @param {String} pass パスワード
+	 * @returns {Array(Object)} 
 	 */
 	_login: function(space, id, pass) {
 		if(space == '' || id == '' || pass == '') {
@@ -135,11 +185,5 @@ var Backlog = Class.create({
 		this._url = config.url;
 		this._id = config.id;
 		this._pass = config.pass;
-		
-	},
-		
-	test: function() {
-		var messageObject = {};
-		
 	}
 });
