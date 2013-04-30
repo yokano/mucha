@@ -59,8 +59,9 @@ var Game = Class.create(Core, {
 		
 		this.smallMessage({
 			message: 'メッセージ出力テスト',
-			callback: function() {
-				console.log(this.test);
+			confirm: false,
+			callback: function(answer) {
+				console.log(answer);
 			}
 		});
 	},
@@ -71,9 +72,10 @@ var Game = Class.create(Core, {
 	 * @method
 	 * @param {Object} config
 	 * {
-	 *     message: '表示するメッセージ'
-	 *     form: '表示する HTML フォームの id'
-	 *     confirm: true/false (はい、いいえを表示するかどうか)
+	 *     message: {string} 表示するメッセージ
+	 *     form: {string} 表示する HTML フォームの id
+	 *     confirm: {bool} はい、いいえを表示するかどうか
+	 *     callback: {function} メッセージを閉じた時に呼び出される関数
 	 * }
 	 */
 	smallMessage: function(config) {
@@ -99,11 +101,34 @@ var Game = Class.create(Core, {
 		messageWindow.addChild(label);
 		game.currentScene.addChild(messageWindow);
 		
-		// タッチイベント
-		messageWindow.addEventListener('touchstart', function() {
-			game.currentScene.removeChild(messageWindow);
-			config.callback.call(game);
-		});
+		if(config.confirm) {
+			// 選択肢付きメッセージ
+			var yes = new Label();
+			var no = new Label();
+			yes.color = no.color = 'white';
+			yes.font = no.font = '40px sans-serif';
+			yes.y = no.y = 90;
+			yes.x = 30;
+			no.x = 160;
+			yes.text = 'はい';
+			no.text = 'いいえ';
+			messageWindow.addChild(yes);
+			messageWindow.addChild(no);
+			yes.addEventListener('touchstart', function() {
+				game.currentScene.removeChild(messageWindow);
+				config.callback.call(game, true);
+			});
+			no.addEventListener('touchstart', function() {
+				game.currentScene.removeChild(messageWindow);
+				config.callback.call(game, false);
+			});
+		} else {
+			// 通常メッセージ
+			messageWindow.addEventListener('touchstart', function() {
+				game.currentScene.removeChild(messageWindow);
+				config.callback.call(game);
+			});
+		}
 	}
 });
 
