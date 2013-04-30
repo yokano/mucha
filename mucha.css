@@ -18,7 +18,3 @@ body {
 	border-radius: 5px;
 	display: none;
 }
-
-#enchant-stage {
-	z-index: -1;
-}

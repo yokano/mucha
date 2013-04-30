@@ -32,6 +32,8 @@ var Game = Class.create(Core, {
 		Core.call(this, 320, 480);
 		this.preload('/mucha/background.png');
 		this.preload('/mucha/small_window.png');
+		this.preload('/mucha/large_window.png');
+		this.preload('/mucha/title.png');
 	},
 	
 	/**
@@ -40,30 +42,66 @@ var Game = Class.create(Core, {
 	 * @memberof Game
 	 */
 	onload: function() {
-		// 背景
+		var titleScene = new TitleScene();
+		this.pushScene(titleScene);
+	},
+	
+	/**
+	 * シーンを変更する
+	 * @method
+	 * @memberof Game
+	 */
+	changeScene: function(scene) {
+		this.popScene();
+		this.pushScene(new scene());
+	},
+	
+	/**
+	 * 大きいウィンドウでメッセージを表示
+	 * @memberof Game
+	 * @method
+	 * @param {Object} config
+	 * {
+	 *     message: {string} 表示するメッセージ
+	 *     form: {string} 表示する HTML フォームの id
+	 *     callback: {function} メッセージを閉じた時に呼び出される関数
+	 * }
+	 */
+	largeMessage: function(config) {
 		var background = new Sprite();
-		background.image = this.assets['/mucha/background.png'];
+		background.image = this.assets['/mucha/large_window.png'];
 		background.width = background.image.width;
 		background.height = background.image.height;
-		this.currentScene.addChild(background);
 		
-		// Backlog テスト
-		var backlog = new Backlog({
-			url: 'https://okano.backlog.jp/XML-RPC',
-			id: 'okano',
-			pass: 'vtyfu7slg',
-			method: 'get_projects'
+		var messageWindow = new Group();
+		messageWindow.width = background.width;
+		messageWindow.height = background.height;
+		messageWindow.x = (game.width - messageWindow.width) / 2;
+		messageWindow.y = (game.height - messageWindow.height) / 2;
+		messageWindow.addChild(background);
+		
+		var title = new Label();
+		title.color = 'white';
+		title.text = config.title;
+		title.font = '30px sans-serif';
+		title.x = 20;
+		title.y = 15;
+		messageWindow.addChild(title);
+		
+		var message = new Label();
+		message.color = 'white';
+		message.text = config.message;
+		message.font = '20px sans-serif';
+		message.x = 20;
+		message.y = 100;
+		messageWindow.addChild(message);
+		
+		messageWindow.addEventListener('touchstart', function() {
+			game.currentScene.removeChild(messageWindow);
+			config.callback.call(game);
 		});
 		
-		this.test = 'hello'
-		
-		this.smallMessage({
-			message: 'メッセージ出力テスト',
-			confirm: false,
-			callback: function(answer) {
-				console.log(answer);
-			}
-		});
+		game.currentScene.addChild(messageWindow);
 	},
 	
 	/**
@@ -129,6 +167,47 @@ var Game = Class.create(Core, {
 				config.callback.call(game);
 			});
 		}
+	}
+});
+
+/**
+ * タイトルシーン
+ * @class
+ * @extends Scene
+ */
+var TitleScene = Class.create(Scene, {	
+	/**
+	 * コンストラクタ
+	 * @method
+	 * @memberof TitleScene
+	 */
+	initialize: function() {
+		Scene.call(this);
+		
+		var background = new Sprite();
+		background.image = game.assets['/mucha/title.png'];
+		background.width = background.image.width;
+		background.height = background.image.height;
+		background.addEventListener(Event.TOUCH_START, function() {
+			game.changeScene(TaskScene);
+		});
+		this.addChild(background);
+	}
+});
+
+/**
+ * タスク無茶振りシーン
+ * @class
+ * @extends Scene
+ */
+var TaskScene = Class.create(Scene, {
+	/**
+	 * コンストラクタ
+	 * @method
+	 * @memberof TaskScene
+	 */
+	initialize: function() {
+		Scene.call(this);
 	}
 });
 
