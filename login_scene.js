@@ -1,5 +1,5 @@
 /**
- * Backlogログインシーン
+ * Backlog ログインシーン
  * @class
  * @extends Scene
  */
