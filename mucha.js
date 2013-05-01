@@ -141,6 +141,7 @@ var Game = Class.create(Core, {
 				if(!game.checkForm(form)) {
 					return;
 				} else {
+					console.log(game.getForm(form));
 					form.css('z-index', 0);
 				}
 			}
@@ -233,10 +234,16 @@ var Game = Class.create(Core, {
 	/**
 	 * 指定されたフォーム内の<input>に入力されたデータを取得する
 	 * @param {jQuery Object} form フォームオブジェクト
-	 * @returns 
+	 * @returns {Object} <input> の id と value のキーバリュー値
 	 */
-	getForm: function() {
-		
+	getForm: function(form) {
+		var inputs = form.find('input');
+		var result = {};
+		for(var i = 0; i < inputs.length; i++) {
+			var input = $(inputs[i]);
+			result[input.attr('id')] = input.val();
+		}
+		return result;
 	}
 });
 
