@@ -4,17 +4,20 @@
 
 body {
 	background-image: url("/mucha/blocks.png");
+	width: 320px;
+	height: 480px;
+}
+
+#enchant-stage {
+	z-index: 1;
 }
 
 #login {
-	padding: 10px;
-	width: 220px;
-	background-color: #eee;
-	border-style: solid;
-	box-shadow: 2px 2px rgba(0, 0, 0, 0.4);
 	position: absolute;
-	left: 25px;
-	top: 50px;
-	border-radius: 5px;
-	display: none;
+	left: 35px;
+	top: 110px;
+	font: 20px sans-serif;
+	color: white;
+	width: 220px;
+	z-index: 0;
 }

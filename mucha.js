@@ -34,6 +34,7 @@ var Game = Class.create(Core, {
 		this.preload('/mucha/small_window.png');
 		this.preload('/mucha/large_window.png');
 		this.preload('/mucha/title.png');
+		this.preload('/mucha/button.png');
 	},
 	
 	/**
@@ -62,7 +63,9 @@ var Game = Class.create(Core, {
 	 * @method
 	 * @param {Object} config
 	 * {
+	 *     title: {string} 表示するウィンドウのタイトル
 	 *     message: {string} 表示するメッセージ
+	 *     button: {string} ボタンに表示するラベル
 	 *     form: {string} 表示する HTML フォームの id
 	 *     callback: {function} メッセージを閉じた時に呼び出される関数
 	 * }
@@ -96,7 +99,51 @@ var Game = Class.create(Core, {
 		message.y = 100;
 		messageWindow.addChild(message);
 		
-		messageWindow.addEventListener('touchstart', function() {
+		var form;
+		if(config.form != undefined) {
+			form = $('#' + config.form);
+			form.css('z-index', 2);
+		}
+		
+		// button が設定されていたらボタンを押して閉じる
+		// 設定されていなかったらウィンドウをタップして閉じる
+		var closeTrigger = null;
+		if(config.button == undefined) {
+			closeTrigger = messageWindow;
+		} else {
+			var button = new Group();
+			closeTrigger = button;
+
+			var background = new Sprite();
+			background.image = game.assets['/mucha/button.png'];
+			background.width = background.image.width;
+			background.height = background.image.height;
+			button.addChild(background);
+			
+			var label = new Label();
+			label.text = config.button;
+			label.color = 'white';
+			label.font = '30px sans-serif';
+			label.x = (background.width - label._boundWidth) / 2;
+			label.y = (background.height - 30) / 2;
+			button.addChild(label);
+			
+			button.width = background.width;
+			button.height = background.height;
+			button.x = (messageWindow.width - button.width) / 2;
+			button.y = 350;
+			messageWindow.addChild(button);
+		}
+		
+		// 閉じる処理
+		closeTrigger.addEventListener('touchstart', function() {
+			if(form != undefined) {
+				if(!game.checkForm(form)) {
+					return;
+				} else {
+					form.css('z-index', 0);
+				}
+			}
 			game.currentScene.removeChild(messageWindow);
 			config.callback.call(game);
 		});
@@ -137,7 +184,6 @@ var Game = Class.create(Core, {
 		
 		messageWindow.addChild(background);
 		messageWindow.addChild(label);
-		game.currentScene.addChild(messageWindow);
 		
 		if(config.confirm) {
 			// 選択肢付きメッセージ
@@ -167,6 +213,30 @@ var Game = Class.create(Core, {
 				config.callback.call(game);
 			});
 		}
+	},
+	
+	/**
+	 * 指定されたフォーム内の<input>がすべて入力されているか調べる
+	 * @param {jQuery Object} form フォームオブジェクト
+	 */
+	checkForm: function(form) {
+		var inputs = form.find('input');
+		for(var i = 0; i < inputs.length; i++) {
+			if($(inputs[i]).val() == '') {
+				alert('入力されていない項目があります');
+				return false;
+			}
+		}
+		return true;
+	},
+	
+	/**
+	 * 指定されたフォーム内の<input>に入力されたデータを取得する
+	 * @param {jQuery Object} form フォームオブジェクト
+	 * @returns 
+	 */
+	getForm: function() {
+		
 	}
 });
 
@@ -189,7 +259,7 @@ var TitleScene = Class.create(Scene, {
 		background.width = background.image.width;
 		background.height = background.image.height;
 		background.addEventListener(Event.TOUCH_START, function() {
-			game.changeScene(TaskScene);
+			game.changeScene(LoginScene);
 		});
 		this.addChild(background);
 	}
@@ -208,6 +278,43 @@ var TaskScene = Class.create(Scene, {
 	 */
 	initialize: function() {
 		Scene.call(this);
+	},
+	
+	onenter: function() {
+	}
+});
+
+/**
+ * Backlog ログインシーン
+ * @class
+ * @extends Scene
+ */
+var LoginScene = Class.create(Scene, {
+	/**
+	 * コンストラクタ
+	 * @method
+	 * @memberof LoginScene
+	 */
+	initialize: function() {
+		Scene.call(this);
+		this.backgroundColor = 'black';
+	},
+	
+	/**
+	 * シーン開始時の処理
+	 * @method
+	 * @memberof LoginScene
+	 */
+	onenter: function() {
+		game.largeMessage({
+			title: 'Backlog へログイン',
+			message: '',
+			form: 'login',
+			button: 'けってい',
+			callback: function() {
+				console.log('button');
+			}
+		});
 	}
 });
 
