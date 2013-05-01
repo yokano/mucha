@@ -136,17 +136,18 @@ var Game = Class.create(Core, {
 		}
 		
 		// 閉じる処理
+		var formDatas = null;
 		closeTrigger.addEventListener('touchstart', function() {
 			if(form != undefined) {
 				if(!game.checkForm(form)) {
 					return;
 				} else {
-					console.log(game.getForm(form));
+					formDatas = game.getForm(form);
 					form.css('z-index', 0);
 				}
 			}
 			game.currentScene.removeChild(messageWindow);
-			config.callback.call(game);
+			config.callback.call(game, formDatas);
 		});
 		
 		game.currentScene.addChild(messageWindow);
@@ -244,164 +245,5 @@ var Game = Class.create(Core, {
 			result[input.attr('id')] = input.val();
 		}
 		return result;
-	}
-});
-
-/**
- * タイトルシーン
- * @class
- * @extends Scene
- */
-var TitleScene = Class.create(Scene, {	
-	/**
-	 * コンストラクタ
-	 * @method
-	 * @memberof TitleScene
-	 */
-	initialize: function() {
-		Scene.call(this);
-		
-		var background = new Sprite();
-		background.image = game.assets['/mucha/title.png'];
-		background.width = background.image.width;
-		background.height = background.image.height;
-		background.addEventListener(Event.TOUCH_START, function() {
-			game.changeScene(LoginScene);
-		});
-		this.addChild(background);
-	}
-});
-
-/**
- * タスク無茶振りシーン
- * @class
- * @extends Scene
- */
-var TaskScene = Class.create(Scene, {
-	/**
-	 * コンストラクタ
-	 * @method
-	 * @memberof TaskScene
-	 */
-	initialize: function() {
-		Scene.call(this);
-	},
-	
-	onenter: function() {
-	}
-});
-
-/**
- * Backlog ログインシーン
- * @class
- * @extends Scene
- */
-var LoginScene = Class.create(Scene, {
-	/**
-	 * コンストラクタ
-	 * @method
-	 * @memberof LoginScene
-	 */
-	initialize: function() {
-		Scene.call(this);
-		this.backgroundColor = 'black';
-	},
-	
-	/**
-	 * シーン開始時の処理
-	 * @method
-	 * @memberof LoginScene
-	 */
-	onenter: function() {
-		game.largeMessage({
-			title: 'Backlog へログイン',
-			message: '',
-			form: 'login',
-			button: 'けってい',
-			callback: function() {
-				console.log('button');
-			}
-		});
-	}
-});
-
-/**
- * ログインフォームクラス
- * @class
- * @member {DOM} _div ログインフォームのdiv
- */
-var LoginForm = Class.create({
-	/**
-	 * コンストラクタ
-	 * @method
-	 * @memberof LoginForm
-	 */
-	initialize: function() {
-		var submit = $('#submit');
-		var space = $('#space');
-		var id = $('#id');
-		var pass = $('#pass');
-		
-		var self = this;
-		submit.click(function() {
-			self._login(space.val(), id.val(), pass.val());
-		});
-	},
-	
-	/**
-	 * ログインする
-	 * @method
-	 * @memberof LoginForm
-	 * @param {String} space Backlogスペース名
-	 * @param {String} id ログインID
-	 * @param {String} pass パスワード
-	 * @returns {Array(Object)} 
-	 */
-	_login: function(space, id, pass) {
-		if(space == '' || id == '' || pass == '') {
-			alert('入力されていない項目があります');
-			return;
-		}
-		
-		$.ajax('/backlog', {
-			data: {
-				space: space,
-				id: id,
-				pass: pass,
-				method: 'get_projects'
-			},
-			dataType: 'json',
-			error: function() {
-				console.log('error');
-			},
-			success: function(data) {
-				console.log(data);
-			}
-		});
-	}
-});
-
-/**
- * Backlog へのインタフェース
- * @class
- */
-var Backlog = Class.create({
-	_url: "",
-	_id: "",
-	_pass: "",
-	
-	/**
-	 * コンストラクタ
-	 * @method
-	 * @memberof Backlog
-	 * @param {Object} config 設定オブジェクト
-	 * url : API のURL
-	 * id : ログインID
-	 * pass : ログインパスワード
-	 */
-	initialize: function(config) {
-		this._url = config.url;
-		this._id = config.id;
-		this._pass = config.pass;
 	}
 });
