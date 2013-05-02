@@ -36,7 +36,8 @@ var Game = Class.create(Core, {
 	 */
 	onload: function() {
 		var titleScene = new TitleScene();
-		this.pushScene(titleScene);
+//		this.pushScene(titleScene);
+		this.changeScene(TaskScene);
 	},
 	
 	/**

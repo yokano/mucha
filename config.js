@@ -10,5 +10,6 @@ var resources = [
 	'/mucha/title.png',
 	'/mucha/button.png',
 	'/mucha/loading.png',
-	'/mucha/castle.png'
+	'/mucha/castle.png',
+	'/mucha/brave.png'
 ];
