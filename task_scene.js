@@ -14,5 +14,10 @@ var TaskScene = Class.create(Scene, {
 	},
 	
 	onenter: function() {
+		var background = new Sprite();
+		background.image = game.assets['/mucha/castle.png'];
+		background.width = background.image.width;
+		background.height = background.image.height;
+		this.addChild(background);
 	}
 });

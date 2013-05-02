@@ -12,12 +12,6 @@ $(function() {
 });
 
 /**
- * ゲームの設定
- */
-var config = {
-};
-
-/**
  * Gameクラス
  * @class
  * @extends Core
@@ -30,11 +24,9 @@ var Game = Class.create(Core, {
 	 */
 	initialize: function() {
 		Core.call(this, 320, 480);
-		this.preload('/mucha/background.png');
-		this.preload('/mucha/small_window.png');
-		this.preload('/mucha/large_window.png');
-		this.preload('/mucha/title.png');
-		this.preload('/mucha/button.png');
+		for(var i = 0; i < resources.length; i++) {
+			this.preload(resources[i]);
+		}
 	},
 	
 	/**
@@ -59,6 +51,8 @@ var Game = Class.create(Core, {
 	
 	/**
 	 * 大きいウィンドウでメッセージを表示
+	 * Scene から呼び出すこと
+	 * フォームが指定されている場合はコールバック関数の引数にフォームデータをセットする
 	 * @memberof Game
 	 * @method
 	 * @param {Object} config
@@ -147,7 +141,7 @@ var Game = Class.create(Core, {
 				}
 			}
 			game.currentScene.removeChild(messageWindow);
-			config.callback.call(game, formDatas);
+			config.callback.call(game.currentScene, formDatas);
 		});
 		
 		game.currentScene.addChild(messageWindow);
@@ -219,6 +213,8 @@ var Game = Class.create(Core, {
 	
 	/**
 	 * 指定されたフォーム内の<input>がすべて入力されているか調べる
+	 * @method
+	 * @memberof Game
 	 * @param {jQuery Object} form フォームオブジェクト
 	 */
 	checkForm: function(form) {
@@ -234,6 +230,8 @@ var Game = Class.create(Core, {
 	
 	/**
 	 * 指定されたフォーム内の<input>に入力されたデータを取得する
+	 * @method
+	 * @memberof Game
 	 * @param {jQuery Object} form フォームオブジェクト
 	 * @returns {Object} <input> の id と value のキーバリュー値
 	 */
@@ -245,5 +243,31 @@ var Game = Class.create(Core, {
 			result[input.attr('id')] = input.val();
 		}
 		return result;
+	},
+	
+	/**
+	 * ローディングアニメーションの表示
+	 * @method
+	 * @memberof Game
+	 */
+	startLoading: function() {
+		var loading = new Sprite(50, 50);
+		loading.image = game.assets['/mucha/loading.png'];
+		loading.x = (game.width - loading.width) / 2;
+		loading.y = (game.height - loading.height) / 2;
+		loading.addEventListener('enterframe', function() {
+			loading.frame = (game.frame / 3) % 8;
+		});
+		this.currentScene.addChild(loading);
+		this._loading = loading;
+	},
+	
+	/**
+	 * ローディングアニメーションの非表示
+	 * @method
+	 * @memberof Game
+	 */
+	stopLoading: function() {
+		this.currentScene.removeChild(this._loading);
 	}
 });

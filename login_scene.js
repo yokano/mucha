@@ -25,7 +25,17 @@ var LoginScene = Class.create(Scene, {
 			message: '',
 			form: 'login',
 			button: 'けってい',
-			callback: this.login
+			callback: function(formDatas) {
+				this.login(formDatas, function(result) {
+					if(result) {
+						alert('ログインに成功しました');
+						game.changeScene(TaskScene);
+					} else {
+						alert('ログインに失敗しました');
+						game.currentScene.onenter();
+					}
+				});
+			}
 		});
 	},
 	
@@ -41,13 +51,17 @@ var LoginScene = Class.create(Scene, {
 	 *     id {string} ログインID
 	 *     pass {string} パスワード
 	 * }
+	 * @param {function} callback ログイン処理終了時に呼び出される関数
+	 * @returns {bool} 成功したらTrue
 	 */
-	login: function(config) {
+	login: function(config, callback) {
+		var result;
 		if(config == null) {
 			console.log('login data error');
-			return;
+			return false;
 		}
 		
+		game.startLoading();
 		$.ajax('/backlog', {
 			data: {
 				method: 'get_projects',
@@ -57,14 +71,19 @@ var LoginScene = Class.create(Scene, {
 			},
 			dataType: 'json',
 			error: function() {
+				result = false;
 				console.log('backlog api error');
 			},
 			success: function(data) {
 				if(data.length == 0) {
-					alert('ログインに失敗しました');
+					result = false;
 				} else {
-					alert('ログインに成功しました');
+					result = true;
 				}
+			},
+			complete: function() {
+				game.stopLoading();
+				callback.call(this, result);
 			}
 		});
 	}
