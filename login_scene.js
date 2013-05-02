@@ -78,6 +78,7 @@ var LoginScene = Class.create(Scene, {
 				if(data.length == 0) {
 					result = false;
 				} else {
+					game.projects = data;
 					result = true;
 				}
 			},

@@ -15,8 +15,11 @@ $(function() {
  * Gameクラス
  * @class
  * @extends Core
+ * @property {array} projects プロジェクト一覧のキャッシュ
  */
 var Game = Class.create(Core, {
+	projects: null,
+	
 	/**
 	 * 初期化
 	 * @method
@@ -35,9 +38,8 @@ var Game = Class.create(Core, {
 	 * @memberof Game
 	 */
 	onload: function() {
-		var titleScene = new TitleScene();
-//		this.pushScene(titleScene);
-		this.changeScene(TaskScene);
+		this.changeScene(TitleScene);
+//		this.changeScene(TaskScene);
 	},
 	
 	/**

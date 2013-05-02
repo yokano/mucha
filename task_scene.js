@@ -79,6 +79,8 @@ var TaskScene = Class.create(Scene, {
 	 * @memberof TaskScene
 	 */
 	selectProject: function() {
+		// <option> の作成
+		
 		game.smallMessage({
 			message: 'どのプロジェクトへ<br/>さんかしているのじゃ？',
 			callback: function() {}
