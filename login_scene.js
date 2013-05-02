@@ -28,7 +28,6 @@ var LoginScene = Class.create(Scene, {
 			callback: function(formDatas) {
 				this.login(formDatas, function(result) {
 					if(result) {
-						alert('ログインに成功しました');
 						game.changeScene(TaskScene);
 					} else {
 						alert('ログインに失敗しました');

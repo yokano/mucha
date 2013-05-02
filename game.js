@@ -158,6 +158,7 @@ var Game = Class.create(Core, {
 	 * {
 	 *     message: {string} 表示するメッセージ
 	 *     form: {string} 表示する HTML フォームの id
+	 *     button: form を設定した時に表示するボタンのラベル
 	 *     confirm: {bool} はい、いいえを表示するかどうか
 	 *     callback: {function} メッセージを閉じた時に呼び出される関数
 	 * }
@@ -205,6 +206,39 @@ var Game = Class.create(Core, {
 				game.currentScene.removeChild(messageWindow);
 				config.callback.call(game.currentScene, false);
 			});
+		} else if(config.form != undefined) {
+			// フォーム付きメッセージ
+			var form = $('#' + config.form);
+			form.css('z-index', '2')
+			
+			var button = new Group();
+			button.x = 160;
+			button.y = 90;
+			
+			var background = new Sprite();
+			background.image = game.assets['/mucha/mini_button.png'];
+			background.width = background.image.width;
+			background.height = background.image.height;
+			button.addChild(background);
+
+			var label = new Label();
+			if(config.button == undefined) {
+				config.button = '';
+			}
+			label.text = config.button;
+			label.color = 'white';
+			label.font = '20px sansserif';
+			label.x = (background.width - label._boundWidth) / 2;
+			label.y = (background.height - 20) / 2;
+			button.addChild(label);
+
+			messageWindow.addChild(button);
+			button.addEventListener('touchstart', function() {
+				form.css('z-index', 0);
+				var formDatas = game.getForm(form)
+				game.currentScene.removeChild(messageWindow);
+				config.callback.call(game.currentScene, formDatas);
+			});
 		} else {
 			// 通常メッセージ
 			messageWindow.addEventListener('touchstart', function() {
@@ -234,7 +268,7 @@ var Game = Class.create(Core, {
 	},
 	
 	/**
-	 * 指定されたフォーム内の<input>に入力されたデータを取得する
+	 * 指定されたフォーム内の<input>,<select>に入力されたデータを取得する
 	 * @method
 	 * @memberof Game
 	 * @param {jQuery Object} form フォームオブジェクト
@@ -242,10 +276,15 @@ var Game = Class.create(Core, {
 	 */
 	getForm: function(form) {
 		var inputs = form.find('input');
+		var selects = form.find('select');
 		var result = {};
 		for(var i = 0; i < inputs.length; i++) {
 			var input = $(inputs[i]);
 			result[input.attr('id')] = input.val();
+		}
+		for(var i = 0; i < selects.length; i++) {
+			var select = $(selects[i]);
+			result[select.attr('id')] = select.find('option:selected').val();
 		}
 		return result;
 	},

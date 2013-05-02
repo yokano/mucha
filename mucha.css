@@ -24,7 +24,7 @@ body {
 
 #select_project {
 	position: absolute;
-	left: 350x;
-	top: 35px;
+	left: 50px;
+	top: 400px;
 	z-index: 0;
 }

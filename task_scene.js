@@ -80,10 +80,19 @@ var TaskScene = Class.create(Scene, {
 	 */
 	selectProject: function() {
 		// <option> の作成
+		$('#projects').empty();
+		for(var i = 0; i < game.projects.length; i++) {
+			var project = game.projects[i];
+			$('<option value="' + project.id + '">' + project.name + '</option>').appendTo($('#projects'));
+		}
 		
 		game.smallMessage({
 			message: 'どのプロジェクトへ<br/>さんかしているのじゃ？',
-			callback: function() {}
+			form: 'select_project',
+			button: 'きめる',
+			callback: function(formDatas) {
+				console.log(formDatas);
+			}
 		});
 	}
 });
