@@ -60,6 +60,7 @@ var LoginScene = Class.create(Scene, {
 			return false;
 		}
 		
+		var messageWindow = game.waitMessage('つうしんちゅうです<br/>しばらく　おまちください');
 		game.startLoading();
 		$.ajax('/backlog', {
 			data: {
@@ -83,6 +84,7 @@ var LoginScene = Class.create(Scene, {
 			},
 			complete: function() {
 				game.stopLoading();
+				game.currentScene.removeChild(messageWindow);
 				callback.call(this, result);
 			}
 		});

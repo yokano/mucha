@@ -251,6 +251,40 @@ var Game = Class.create(Core, {
 	},
 	
 	/**
+	 * 通信待機中にメッセージを表示する
+	 * @method
+	 * @memberof Game
+	 * @param {string} message 待機中に表示するメッセージ
+	 * @returns {object} メッセージウィンドウ　閉じるときに使う
+	 */
+	waitMessage: function(message) {
+		var background = new Sprite();
+		background.image = this.assets['/mucha/small_window.png'];
+		background.width = background.image.width;
+		background.height = background.image.height;
+		
+		var label = new Label();
+		label.color = 'white';
+		label.text = message;
+		label.font = '20px sans-serif'
+		label.x = 20;
+		label.y = 20;
+		
+		var messageWindow = new Group();
+		messageWindow.width = background.width;
+		messageWindow.height = background.height;
+		messageWindow.x = (game.width - messageWindow.width) / 2;
+		messageWindow.y = (game.height - messageWindow.height) - 10;
+		
+		messageWindow.addChild(background);
+		messageWindow.addChild(label);
+		game.currentScene.addChild(messageWindow);
+		return messageWindow
+	},
+	
+	
+	
+	/**
 	 * 指定されたフォーム内の<input>がすべて入力されているか調べる
 	 * @method
 	 * @memberof Game

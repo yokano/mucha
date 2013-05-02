@@ -2,8 +2,11 @@
  * タスク無茶振りシーン
  * @class
  * @extends Scene
+ * @property {string} _selectedProject 選択したプロジェクトのID
  */
 var TaskScene = Class.create(Scene, {
+	_selectedProject: '',
+	
 	/**
 	 * コンストラクタ
 	 * @method
@@ -91,8 +94,49 @@ var TaskScene = Class.create(Scene, {
 			form: 'select_project',
 			button: 'きめる',
 			callback: function(formDatas) {
-				console.log(formDatas);
+				this._selectedProject = formDatas.projects;
+				this.doYouWantDetail();
 			}
+		});
+	},
+	
+	/**
+	 * 検索の詳細設定をするか？
+	 * @method
+	 * @memberof TaskScene
+	 */
+	doYouWantDetail: function() {
+		game.smallMessage({
+			message: 'くわしい　じょうけんを<br/>していするのか？',
+			confirm: true,
+			callback: function(answer) {
+				if(answer) {
+					this.setDetail();
+				} else {
+					this.searchTask();
+				}
+			}
+		});
+	},
+	
+	/**
+	 * タスクを検索するための詳細条件を入力する
+	 * @method
+	 * @memberof TaskScene
+	 */
+	setDetail: function() {
+		console.log('詳細条件の設定');
+	},
+	
+	/**
+	 * タスクを検索している時の表示
+	 * @method
+	 * @memberof TaskScene
+	 */
+	searchTask: function() {
+		game.smallMessage({
+			message: 'ふむ　なにか　いいにんむは<br/>あったかのう？<br/>すこし　まつのじゃ',
+			
 		});
 	}
 });
