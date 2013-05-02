@@ -27,10 +27,61 @@ var TaskScene = Class.create(Scene, {
 		
 		var brave = new Brave();
 		this.addChild(brave);
-		brave.come(function() {
-			brave.go(function() {
-				console.log('勇者の退出終了');
-			});
+		brave.come(this.greeting);
+	},
+	
+	/**
+	 * 挨拶
+	 * @method
+	 * @memberof TaskScene
+	 */
+	greeting: function() {
+		game.smallMessage({
+			message: 'よくきたな　ゆうしゃよ<br/>ぶじなすがたを　みれて<br/>なによりじゃ',
+			callback: this.doYouWantNewTask
+		});
+	},
+	
+	/**
+	 * 新しいタスクが欲しいか確認
+	 * @method
+	 * @memberof TaskScene
+	 */
+	doYouWantNewTask: function() {
+		game.smallMessage({
+			message: 'あらたな　にんむを<br/>うけたいのか？',
+			confirm: true,
+			callback: function(answer) {
+				if(answer) {
+					this.selectProject();
+				} else {
+					this.whyDoYouComeHere();
+				}
+			}
+		});
+	},
+	
+	/**
+	 * どうしてここへきたの？
+	 * @method
+	 * @memberof TaskScene
+	 */
+	whyDoYouComeHere: function() {
+		game.smallMessage({
+			message: 'なんじゃと！<br/>それでは　いったい<br/>なぜ　ここへきたのじゃ？',
+			callback: this.doYouWantNewTask
+		});
+	},
+	
+	/**
+	 * プロジェクトの選択
+	 * @method
+	 * @memberof TaskScene
+	 */
+	selectProject: function() {
+		game.smallMessage({
+			message: 'どのプロジェクトへ<br/>さんかしているのじゃ？',
+			callback: function() {}
 		});
 	}
 });

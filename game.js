@@ -197,19 +197,21 @@ var Game = Class.create(Core, {
 			messageWindow.addChild(no);
 			yes.addEventListener('touchstart', function() {
 				game.currentScene.removeChild(messageWindow);
-				config.callback.call(game, true);
+				config.callback.call(game.currentScene, true);
 			});
 			no.addEventListener('touchstart', function() {
 				game.currentScene.removeChild(messageWindow);
-				config.callback.call(game, false);
+				config.callback.call(game.currentScene, false);
 			});
 		} else {
 			// 通常メッセージ
 			messageWindow.addEventListener('touchstart', function() {
 				game.currentScene.removeChild(messageWindow);
-				config.callback.call(game);
+				config.callback.call(game.currentScene);
 			});
 		}
+		
+		game.currentScene.addChild(messageWindow);
 	},
 	
 	/**
