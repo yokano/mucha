@@ -79,6 +79,9 @@ var LoginScene = Class.create(Scene, {
 					result = false;
 				} else {
 					game.projects = data;
+					game.id = config.id;
+					game.pass = config.pass;
+					game.space = config.space;
 					result = true;
 				}
 			},

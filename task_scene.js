@@ -134,9 +134,24 @@ var TaskScene = Class.create(Scene, {
 	 * @memberof TaskScene
 	 */
 	searchTask: function() {
-		game.smallMessage({
-			message: 'ふむ　なにか　いいにんむは<br/>あったかのう？<br/>すこし　まつのじゃ',
-			
+		game.waitMessage('ふむ　なにか　いいにんむは<br/>あったかのう？<br/>すこし　まつのじゃ');
+		game.startLoading();
+		$.ajax('/backlog', {
+			data: {
+				method: 'find_issue',
+				id: game.id,
+				pass: game.pass,
+				space: game.space,
+				project: this._selectedProject,
+				status: [1, 2, 3]
+			},
+			dataType: 'json',
+			error: function() {
+				console.log('api error');
+			},
+			success: function() {
+				console.log('sccess');
+			}
 		});
 	}
 });

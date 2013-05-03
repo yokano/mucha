@@ -16,9 +16,15 @@ $(function() {
  * @class
  * @extends Core
  * @property {array} projects プロジェクト一覧のキャッシュ
+ * @property {string} id ログインid
+ * @property {string} pass パスワード
+ * @property {string} Backlogのログイン先スペース名
  */
 var Game = Class.create(Core, {
 	projects: null,
+	id: null,
+	pass: null,
+	space: null,
 	
 	/**
 	 * 初期化
