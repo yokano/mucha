@@ -194,9 +194,19 @@ var TaskScene = Class.create(Scene, {
 	showRandomTask: function() {
 		var task = this._tasks[Math.floor(Math.random() * this._tasks.length)];
 		var message = task.key + '<br/>' + task.created_on + '<br/>' + task.components + '<br/>' + task.status + '<br/>' + task.assigner + '<br/>' + task.description;
+		
+		$('#task_title').html(task.summary);
+		$('#task_key').html(task.key);
+		$('#task_created_on').html(task.created_on);
+		$('#task_component').html(task.components);
+		$('#task_status').html(task.status);
+		$('#task_assigner').html(task.assigner);
+		$('#task_description').html(task.description);
+		
 		game.largeMessage({
-			title: task.summary,
-			message: message,
+			title: '',
+			message: '',
+			form: 'task',
 			callback: this.youCanDo
 		});
 	},

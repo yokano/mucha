@@ -80,7 +80,7 @@ var Game = Class.create(Core, {
 		background.height = background.image.height;
 		
 		var messageWindow = new Group();
-		messageWindow.width = background.width;
+								messageWindow.width = background.width;
 		messageWindow.height = background.height;
 		messageWindow.x = (game.width - messageWindow.width) / 2;
 		messageWindow.y = (game.height - messageWindow.height) / 2;
@@ -112,11 +112,13 @@ var Game = Class.create(Core, {
 		// 設定されていなかったらウィンドウをタップして閉じる
 		var closeTrigger = null;
 		if(config.button == undefined) {
-			closeTrigger = messageWindow;
+			if(config.form == undefined) {
+				closeTrigger = messageWindow;
+			}
 		} else {
 			var button = new Group();
 			closeTrigger = button;
-
+			
 			var background = new Sprite();
 			background.image = game.assets['/mucha/button.png'];
 			background.width = background.image.width;

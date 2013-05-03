@@ -28,3 +28,56 @@ body {
 	top: 400px;
 	z-index: 0;
 }
+
+#task {
+	position: absolute;
+	left: 17px;
+	top: 25px;
+	z-index: 0;
+	width: 286px;
+	height: 430px;
+	color: white;
+	font: 20px sans-serif;
+}
+
+#task_title {
+	height: 60px;
+	overflow: auto;
+	text-align: center;
+}
+
+#task_key {
+	position: absolute;
+	top: 90px;
+}
+
+#task_created_on {
+	position: absolute;
+	top: 90px;
+	left: 120px;
+}
+
+#task_component {
+	position: absolute;
+	top: 120px;
+	overflow: auto;
+}
+
+#task_status {
+	position: absolute;
+	top: 160px;
+}
+
+#task_assigner {
+	position: absolute;
+	top: 160px;
+	left: 100px;
+}
+
+#task_description {
+	position: absolute;
+	top: 200px;
+	height: 220px;
+	overflow: auto;
+	font: "15px serif"
+}
