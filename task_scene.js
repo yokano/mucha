@@ -2,10 +2,8 @@
  * タスク無茶振りシーン
  * @class
  * @extends Scene
- * @property {string} _selectedProject 選択したプロジェクトのID
  */
 var TaskScene = Class.create(Scene, {
-	_selectedProject: '',
 	
 	/**
 	 * コンストラクタ
@@ -31,6 +29,7 @@ var TaskScene = Class.create(Scene, {
 		var brave = new Brave();
 		this.addChild(brave);
 		brave.come(this.greeting);
+		this._brave = brave;
 	},
 	
 	/**
@@ -134,7 +133,8 @@ var TaskScene = Class.create(Scene, {
 	 * @memberof TaskScene
 	 */
 	searchTask: function() {
-		game.waitMessage('ふむ　なにか　いいにんむは<br/>あったかのう？<br/>すこし　まつのじゃ');
+		var self = this;
+		var waitMessage = game.waitMessage('ふむ　なにか　いいにんむは<br/>あったかのう？<br/>すこし　まつのじゃ');
 		game.startLoading();
 		$.ajax('/backlog', {
 			data: {
@@ -142,16 +142,116 @@ var TaskScene = Class.create(Scene, {
 				id: game.id,
 				pass: game.pass,
 				space: game.space,
-				project: this._selectedProject,
+				project: self._selectedProject,
 				status: [1, 2, 3]
 			},
 			dataType: 'json',
 			error: function() {
 				console.log('api error');
+				self.noTask();
 			},
-			success: function() {
-				console.log('sccess');
+			success: function(result) {
+				if(result.length > 0) {
+					self._tasks = result;
+					self.existTask();
+				} else {
+					self.noTask();
+				}
+			},
+			complete: function() {
+				game.stopLoading();
+				game.currentScene.removeChild(waitMessage);
 			}
+		});
+	},
+	
+	/**
+	 * タスクが見つかった
+	 * @method
+	 * @memberof TaskScene
+	 */
+	existTask: function() {
+		game.smallMessage({
+			message: 'おお　こんなにんむが<br/>あったようじゃ',
+			callback: this.showRandomTask
+		});
+	},
+	
+	/**
+	 * タスクが見つからなかった
+	 * @method
+	 * @memberof TaskScene
+	 */
+	noTask: function() {
+		
+	},
+	
+	/**
+	 * ランダムにタスクを表示する
+	 * @method
+	 * @memberof TaskScene
+	 */
+	showRandomTask: function() {
+		var task = this._tasks[Math.floor(Math.random() * this._tasks.length)];
+		var message = task.key + '<br/>' + task.created_on + '<br/>' + task.components + '<br/>' + task.status + '<br/>' + task.assigner + '<br/>' + task.description;
+		game.largeMessage({
+			title: task.summary,
+			message: message,
+			callback: this.youCanDo
+		});
+	},
+	
+	/**
+	 * タスクをやってくれるか尋ねる
+	 * @method
+	 * @memberof TaskScene
+	 */
+	youCanDo: function() {
+		game.smallMessage({
+			message: 'どうじゃ？<br/>ひきうけて　くれるかの？',
+			confirm: true,
+			callback: function(answer) {
+				if(answer) {
+					this.fix();
+				} else {
+					this.nextTask();
+				}
+			}
+		});
+	},
+	
+	/**
+	 * 次のタスクを表示する
+	 * @method
+	 * @memberof TaskScene
+	 */
+	nextTask: function() {
+		game.smallMessage({
+			message: 'そうか　それでは<br/>こちらのにんむは　どうじゃ？',
+			callback: this.showRandomTask
+		})
+	},
+	
+	/**
+	 * タスクが決定した
+	 * @method
+	 * @memberof TaskScene
+	 */
+	fix: function() {
+		game.smallMessage({
+			message: 'そうか！　たのんだぞ<br/>そなたのぼうけんは<br/>まだまだ　つづくのじゃ！',
+			callback: this.exit
+		});
+	},
+	
+	/**
+	 * 勇者が退出してタイトルへ戻る
+	 * @method
+	 * @memberof TaskScene
+	 */
+	exit: function() {
+		this._brave.go(function() {
+			game.changeScene(TitleScene);
 		});
 	}
 });
