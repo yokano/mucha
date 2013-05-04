@@ -214,10 +214,11 @@ var TaskScene = Class.create(Scene, {
 		$('#task_status').html(task.status);
 		$('#task_assigner').html(task.assigner);
 		$('#task_description').html(task.description);
+		$('#task_url').attr('href', task.url);
 		
 		game.message({
 			html: 'task',
-			close: 'touch',
+			close: 'button',
 			callback: this.canYouDo,
 			caller: this
 		});
