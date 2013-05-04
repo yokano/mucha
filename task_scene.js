@@ -38,8 +38,11 @@ var TaskScene = Class.create(Scene, {
 	 * @memberof TaskScene
 	 */
 	greeting: function() {
-		game.smallMessage({
-			message: 'よくきたな　ゆうしゃよ<br/>ぶじなすがたを　みれて<br/>なによりじゃ',
+		game.message({
+			size: 'small',
+			html: 'greeting',
+			close: 'touch',
+			caller: this,
 			callback: this.doYouWantNewTask
 		});
 	},
@@ -50,9 +53,11 @@ var TaskScene = Class.create(Scene, {
 	 * @memberof TaskScene
 	 */
 	doYouWantNewTask: function() {
-		game.smallMessage({
-			message: 'あらたな　にんむを<br/>うけたいのか？',
-			confirm: true,
+		game.message({
+			size: 'small',
+			html: 'do_you_want_new_task',
+			close: 'answer',
+			caller: this,
 			callback: function(answer) {
 				if(answer) {
 					this.selectProject();
@@ -61,6 +66,17 @@ var TaskScene = Class.create(Scene, {
 				}
 			}
 		});
+//		game.smallMessage({
+//			message: 'あらたな　にんむを<br/>うけたいのか？',
+//			confirm: true,
+//			callback: function(answer) {
+//				if(answer) {
+//					this.selectProject();
+//				} else {
+//					this.whyDoYouComeHere();
+//				}
+//			}
+//		});
 	},
 	
 	/**

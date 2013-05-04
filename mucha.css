@@ -5,21 +5,92 @@
 body {
 	background-image: url("/mucha/blocks.png");
 	width: 320px;
-	height: 480px;
 }
 
 #enchant-stage {
 	z-index: 1;
 }
 
-#login {
+/* 大きなメッセージウィンドウ */
+.large_window {
 	position: absolute;
-	left: 35px;
-	top: 110px;
-	font: 20px sans-serif;
-	color: white;
-	width: 220px;
+	left: 0px;
+	top: 0px;
 	z-index: 0;
+	width: 320px;
+	height: 480px;
+	color: white;
+	font: 20px sans-serif;
+	background-image: url("/mucha/large_window.png");
+	background-repeat: no-repeat;
+	background-position: center;
+}
+.large_window .title {
+	position: absolute;
+	top: 35px;
+	left: 20px;
+	width: 280px;
+	overflow: auto;
+	text-align: center;
+	font: 30px sans-serif;
+}
+.large_window .contents {
+	position: absolute;
+	left: 20px;
+	top: 100px;
+	width: 280px;
+	height: 340px;
+}
+.large_window .close_button {
+	position: absolute;
+	left: 90px;
+	top: 280px;
+	height: 50px;
+	width: 100px;
+	border-radius: 10px;
+	color: white;
+	background-color: #333;
+	font: -webkit-control;
+}
+
+/* 小さなメッセージウィンドウ */
+.small_window {
+	position: absolute;
+	left: 0px;
+	top: 320px;
+	z-index: 0;
+	color: white;
+	background-image: url("/mucha/small_window.png");
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 320px;
+	height: 146px;
+}
+.small_window .contents {
+	font-family: sans-serif;
+	font-size: 20px;
+	position: absolute;
+	left: 25px;
+	top: 20px;
+}
+
+/* はい、いいえ */
+#yes,#no {
+	color: white;
+	font-size: 30px;
+	font-family: sans-serif;
+	z-index: 0;
+	cursor: pointer;
+}
+#yes {
+	position: absolute;
+	left: 50px;
+	top: 410px;
+}
+#no {
+	position: absolute;
+	left: 190px;
+	top: 410px;
 }
 
 #select_project {

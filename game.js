@@ -59,239 +59,67 @@ var Game = Class.create(Core, {
 	},
 	
 	/**
-	 * 大きいウィンドウでメッセージを表示
-	 * Scene から呼び出すこと
-	 * フォームが指定されている場合はコールバック関数の引数にフォームデータをセットする
-	 * @memberof Game
+	 * メッセージの表示
 	 * @method
-	 * @param {Object} config
+	 * @memberof Game
+	 * @param {object} config 設定項目
 	 * {
-	 *     title: {string} 表示するウィンドウのタイトル
-	 *     message: {string} 表示するメッセージ
-	 *     button: {string} ボタンに表示するラベル
-	 *     form: {string} 表示する HTML フォームの id
-	 *     callback: {function} メッセージを閉じた時に呼び出される関数
+	 *     size: 'large'なら大きなウィンドウ、'small'なら小さなウィンドウ
+	 *     html: 表示するHTMLタグのid
+	 *     close: ウィンドウを閉じる方法
+	 *         'touch': 画面をタッチしたら閉じる、通常メッセージで使う
+	 *         'button': ボタンを押したら閉じる(class="close_button"の要素)、フォームで使う
+	 *         'answer': はい/いいえを選択したら閉じる、選択肢で使う
+	 *         'no': ユーザは閉じられない、システムがclose()を呼び出して閉じる、待機中に使う
+	 *     check: trueならすべての<input>に入力しないと閉じられなくなる
+	 *            <input>が存在しない場合はfalseと同等
+	 *            falseなら閉じられる
+	 *     callback: ウィンドウを閉じた時に呼び出したい関数
+	 *     caller: 呼び出し元オブジェクト コールバック時に参照する
 	 * }
 	 */
-	largeMessage: function(config) {
-		var background = new Sprite();
-		background.image = this.assets['/mucha/large_window.png'];
-		background.width = background.image.width;
-		background.height = background.image.height;
+	message: function(config) {
+		// HTML要素を手前に表示
+		var html = $('#' + config.html);
+		html.css('z-index', 2);
 		
-		var messageWindow = new Group();
-								messageWindow.width = background.width;
-		messageWindow.height = background.height;
-		messageWindow.x = (game.width - messageWindow.width) / 2;
-		messageWindow.y = (game.height - messageWindow.height) / 2;
-		messageWindow.addChild(background);
+		var close = function() {
+			html.css('z-index', 0);
+			$('#yes').css('z-index', 0);
+			$('#no').css('z-index', 0)
+		};
 		
-		var title = new Label();
-		title.color = 'white';
-		title.text = config.title;
-		title.font = '30px sans-serif';
-		title.x = 20;
-		title.y = 15;
-		messageWindow.addChild(title);
-		
-		var message = new Label();
-		message.color = 'white';
-		message.text = config.message;
-		message.font = '20px sans-serif';
-		message.x = 20;
-		message.y = 100;
-		messageWindow.addChild(message);
-		
-		var form;
-		if(config.form != undefined) {
-			form = $('#' + config.form);
-			form.css('z-index', 2);
-		}
-		
-		// button が設定されていたらボタンを押して閉じる
-		// 設定されていなかったらウィンドウをタップして閉じる
-		var closeTrigger = null;
-		if(config.button == undefined) {
-			if(config.form == undefined) {
-				closeTrigger = messageWindow;
-			}
-		} else {
-			var button = new Group();
-			closeTrigger = button;
-			
-			var background = new Sprite();
-			background.image = game.assets['/mucha/button.png'];
-			background.width = background.image.width;
-			background.height = background.image.height;
-			button.addChild(background);
-			
-			var label = new Label();
-			label.text = config.button;
-			label.color = 'white';
-			label.font = '30px sans-serif';
-			label.x = (background.width - label._boundWidth) / 2;
-			label.y = (background.height - 30) / 2;
-			button.addChild(label);
-			
-			button.width = background.width;
-			button.height = background.height;
-			button.x = (messageWindow.width - button.width) / 2;
-			button.y = 350;
-			messageWindow.addChild(button);
-		}
-		
-		// 閉じる処理
-		var formDatas = null;
-		closeTrigger.addEventListener('touchstart', function() {
-			if(form != undefined) {
-				if(!game.checkForm(form)) {
-					return;
-				} else {
-					formDatas = game.getForm(form);
-					form.css('z-index', 0);
+		if(config.close == 'touch') {
+			// タッチしたら閉じる
+			html.bind('click', function() {
+				close();
+				config.callback.call(config.caller, game.getForm(html));
+			});
+		} else if(config.close == 'button') {
+			// フォームのボタンを押したら閉じる
+			html.find('.close_button').bind('click', function() {
+				if(!config.check || game.checkForm(html)) {
+					close();
+					config.callback.call(config.caller, game.getForm(html));
 				}
-			}
-			game.currentScene.removeChild(messageWindow);
-			config.callback.call(game.currentScene, formDatas);
-		});
-		
-		game.currentScene.addChild(messageWindow);
-	},
-	
-	/**
-	 * 小さいウィンドウでメッセージを表示
-	 * @memberof Game
-	 * @method
-	 * @param {Object} config
-	 * {
-	 *     message: {string} 表示するメッセージ
-	 *     form: {string} 表示する HTML フォームの id
-	 *     button: form を設定した時に表示するボタンのラベル
-	 *     confirm: {bool} はい、いいえを表示するかどうか
-	 *     callback: {function} メッセージを閉じた時に呼び出される関数
-	 * }
-	 */
-	smallMessage: function(config) {
-		var background = new Sprite();
-		background.image = this.assets['/mucha/small_window.png'];
-		background.width = background.image.width;
-		background.height = background.image.height;
-		
-		var label = new Label();
-		label.color = 'white';
-		label.text = config.message;
-		label.font = '20px sans-serif'
-		label.x = 20;
-		label.y = 20;
-		
-		var messageWindow = new Group();
-		messageWindow.width = background.width;
-		messageWindow.height = background.height;
-		messageWindow.x = (game.width - messageWindow.width) / 2;
-		messageWindow.y = (game.height - messageWindow.height) - 10;
-		
-		messageWindow.addChild(background);
-		messageWindow.addChild(label);
-		
-		if(config.confirm) {
-			// 選択肢付きメッセージ
-			var yes = new Label();
-			var no = new Label();
-			yes.color = no.color = 'white';
-			yes.font = no.font = '40px sans-serif';
-			yes.y = no.y = 90;
-			yes.x = 30;
-			no.x = 160;
-			yes.text = 'はい';
-			no.text = 'いいえ';
-			messageWindow.addChild(yes);
-			messageWindow.addChild(no);
-			yes.addEventListener('touchstart', function() {
-				game.currentScene.removeChild(messageWindow);
+			});
+		} else if(config.close == 'answer') {
+			// はい/いいえで閉じる
+			$('#yes').css('z-index', 2).click(function() {
+				close();
 				config.callback.call(game.currentScene, true);
 			});
-			no.addEventListener('touchstart', function() {
-				game.currentScene.removeChild(messageWindow);
+			$('#no').css('z-index', 2).click(function() {
+				close();
 				config.callback.call(game.currentScene, false);
 			});
-		} else if(config.form != undefined) {
-			// フォーム付きメッセージ
-			var form = $('#' + config.form);
-			form.css('z-index', '2')
-			
-			var button = new Group();
-			button.x = 160;
-			button.y = 90;
-			
-			var background = new Sprite();
-			background.image = game.assets['/mucha/mini_button.png'];
-			background.width = background.image.width;
-			background.height = background.image.height;
-			button.addChild(background);
-
-			var label = new Label();
-			if(config.button == undefined) {
-				config.button = '';
-			}
-			label.text = config.button;
-			label.color = 'white';
-			label.font = '20px sansserif';
-			label.x = (background.width - label._boundWidth) / 2;
-			label.y = (background.height - 20) / 2;
-			button.addChild(label);
-
-			messageWindow.addChild(button);
-			button.addEventListener('touchstart', function() {
-				form.css('z-index', 0);
-				var formDatas = game.getForm(form)
-				game.currentScene.removeChild(messageWindow);
-				config.callback.call(game.currentScene, formDatas);
-			});
+		} else if(config.close == 'no') {
+			// 閉じない
 		} else {
-			// 通常メッセージ
-			messageWindow.addEventListener('touchstart', function() {
-				game.currentScene.removeChild(messageWindow);
-				config.callback.call(game.currentScene);
-			});
+			console.log('window close error');
 		}
-		
-		game.currentScene.addChild(messageWindow);
 	},
-	
-	/**
-	 * 通信待機中にメッセージを表示する
-	 * @method
-	 * @memberof Game
-	 * @param {string} message 待機中に表示するメッセージ
-	 * @returns {object} メッセージウィンドウ　閉じるときに使う
-	 */
-	waitMessage: function(message) {
-		var background = new Sprite();
-		background.image = this.assets['/mucha/small_window.png'];
-		background.width = background.image.width;
-		background.height = background.image.height;
 		
-		var label = new Label();
-		label.color = 'white';
-		label.text = message;
-		label.font = '20px sans-serif'
-		label.x = 20;
-		label.y = 20;
-		
-		var messageWindow = new Group();
-		messageWindow.width = background.width;
-		messageWindow.height = background.height;
-		messageWindow.x = (game.width - messageWindow.width) / 2;
-		messageWindow.y = (game.height - messageWindow.height) - 10;
-		
-		messageWindow.addChild(background);
-		messageWindow.addChild(label);
-		game.currentScene.addChild(messageWindow);
-		return messageWindow
-	},
-	
-	
-	
 	/**
 	 * 指定されたフォーム内の<input>がすべて入力されているか調べる
 	 * @method

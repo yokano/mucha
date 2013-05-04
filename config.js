@@ -5,8 +5,8 @@ var config = {
 };
 
 var resources = [
-	'/mucha/small_window.png',
-	'/mucha/large_window.png',
+//	'/mucha/small_window.png',
+//	'/mucha/large_window.png',
 	'/mucha/title.png',
 	'/mucha/button.png',
 	'/mucha/loading.png',

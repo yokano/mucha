@@ -16,20 +16,39 @@
 	</head>
 	<body>
 		<div id="enchant-stage"></div>
-		<div id="login">
-			<label for="space">スペース名<br/>(https://xxxxxx.backlog.jp/)</label><br/>
-			<input type="text" id="space" name="spase" value="okano"></input><br/>
-			<br/>
-			<label for="id">ログインID</label><br/>
-			<input type="text" id="id" name="id" value="okano"></input><br/>
-			<br/>
-			<label for="pass">パスワード</label><br/>
-			<input type="password" id="pass" name="pass"></input><br/>
+		
+		<div id="login_form" class="large_window">
+			<div class="title">Backlogへログイン</div>
+			<div class="contents">
+				<label for="space">スペース名<br/>(https://xxxxxx.backlog.jp/)</label><br/>
+				<input type="text" id="space" name="spase" value="okano"></input><br/>
+				<br/>
+				<label for="id">ログインID</label><br/>
+				<input type="text" id="id" name="id" value="okano"></input><br/>
+				<br/>
+				<label for="pass">パスワード</label><br/>
+				<input type="password" id="pass" name="pass"></input><br/>
+				<button class="close_button">ログイン</button>
+			</div>
 		</div>
+		
+		<div id="now_connection" class="small_window">
+			<div class="contents">つうしんちゅうです<br/>しばらく　おまちください</div>
+		</div>
+		
+		<div id="greeting" class="small_window">
+			<div class="contents">よくきたな　ゆうしゃよ<br/>ぶじなすがたを　みれて<br/>なによりじゃ</div>
+		</div>
+		
+		<div id="do_you_want_new_task" class="small_window">
+			<div class="contents">あらたな　にんむを<br/>うけたいのか？</div>
+		</div>
+		
 		<div id="select_project">
 			<select id="projects">
 			</select>
 		</div>
+		
 		<div id="task">
 			<div id="task_title"></div>
 			<div id="task_key"></div>
@@ -39,5 +58,8 @@
 			<div id="task_assigner"></div>
 			<div id="task_description"></div>
 		</div>
+		
+		<div id="yes">はい</div>
+		<div id="no">いいえ</div>
 	</body>
 </html>

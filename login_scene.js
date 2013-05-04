@@ -20,11 +20,12 @@ var LoginScene = Class.create(Scene, {
 	 * @memberof LoginScene
 	 */
 	onenter: function() {
-		game.largeMessage({
-			title: 'Backlog へログイン',
-			message: '',
-			form: 'login',
-			button: 'けってい',
+		game.message({
+			size: 'large',
+			html: 'login_form',
+			close: 'button',
+			check: true,
+			caller: this,
 			callback: function(formDatas) {
 				this.login(formDatas, function(result) {
 					if(result) {
@@ -60,7 +61,11 @@ var LoginScene = Class.create(Scene, {
 			return false;
 		}
 		
-		var messageWindow = game.waitMessage('つうしんちゅうです<br/>しばらく　おまちください');
+		var messageWindow = game.message({
+			size: 'small',
+			html: 'now_connection',
+			close: 'no'
+		});
 		game.startLoading();
 		$.ajax('/backlog', {
 			data: {
@@ -87,7 +92,7 @@ var LoginScene = Class.create(Scene, {
 			},
 			complete: function() {
 				game.stopLoading();
-				game.currentScene.removeChild(messageWindow);
+				$('#now_connection').css('z-index', 0);
 				callback.call(this, result);
 			}
 		});
