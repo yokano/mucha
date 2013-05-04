@@ -21,7 +21,6 @@ var LoginScene = Class.create(Scene, {
 	 */
 	onenter: function() {
 		game.message({
-			size: 'large',
 			html: 'login_form',
 			close: 'button',
 			check: true,
@@ -62,7 +61,6 @@ var LoginScene = Class.create(Scene, {
 		}
 		
 		var messageWindow = game.message({
-			size: 'small',
 			html: 'now_connection',
 			close: 'no'
 		});

@@ -39,7 +39,6 @@ var TaskScene = Class.create(Scene, {
 	 */
 	greeting: function() {
 		game.message({
-			size: 'small',
 			html: 'greeting',
 			close: 'touch',
 			caller: this,
@@ -54,7 +53,6 @@ var TaskScene = Class.create(Scene, {
 	 */
 	doYouWantNewTask: function() {
 		game.message({
-			size: 'small',
 			html: 'do_you_want_new_task',
 			close: 'answer',
 			caller: this,
@@ -66,17 +64,6 @@ var TaskScene = Class.create(Scene, {
 				}
 			}
 		});
-//		game.smallMessage({
-//			message: 'あらたな　にんむを<br/>うけたいのか？',
-//			confirm: true,
-//			callback: function(answer) {
-//				if(answer) {
-//					this.selectProject();
-//				} else {
-//					this.whyDoYouComeHere();
-//				}
-//			}
-//		});
 	},
 	
 	/**
@@ -85,8 +72,10 @@ var TaskScene = Class.create(Scene, {
 	 * @memberof TaskScene
 	 */
 	whyDoYouComeHere: function() {
-		game.smallMessage({
-			message: 'なんじゃと！<br/>それでは　いったい<br/>なぜ　ここへきたのじゃ？',
+		game.message({
+			html: 'why_do_you_come_here',
+			close: 'touch',
+			caller: this,
 			callback: this.doYouWantNewTask
 		});
 	},
@@ -104,10 +93,10 @@ var TaskScene = Class.create(Scene, {
 			$('<option value="' + project.id + '">' + project.name + '</option>').appendTo($('#projects'));
 		}
 		
-		game.smallMessage({
-			message: 'どのプロジェクトへ<br/>さんかしているのじゃ？',
-			form: 'select_project',
-			button: 'きめる',
+		game.message({
+			html: 'select_project',
+			close: 'button',
+			caller: this,
 			callback: function(formDatas) {
 				this._selectedProject = formDatas.projects;
 				this.doYouWantDetail();
@@ -121,9 +110,10 @@ var TaskScene = Class.create(Scene, {
 	 * @memberof TaskScene
 	 */
 	doYouWantDetail: function() {
-		game.smallMessage({
-			message: 'くわしい　じょうけんを<br/>していするのか？',
-			confirm: true,
+		game.message({
+			html: 'do_you_want_detail',
+			close: 'answer',
+			caller: this,
 			callback: function(answer) {
 				if(answer) {
 					this.setDetail();
@@ -150,7 +140,12 @@ var TaskScene = Class.create(Scene, {
 	 */
 	searchTask: function() {
 		var self = this;
-		var waitMessage = game.waitMessage('ふむ　なにか　いいにんむは<br/>あったかのう？<br/>すこし　まつのじゃ');
+		
+		game.message({
+			html: 'searching',
+			close: 'no'
+		});
+		
 		game.startLoading();
 		$.ajax('/backlog', {
 			data: {
@@ -176,7 +171,7 @@ var TaskScene = Class.create(Scene, {
 			},
 			complete: function() {
 				game.stopLoading();
-				game.currentScene.removeChild(waitMessage);
+				$('#searching').css('z-index', 0);
 			}
 		});
 	},
@@ -187,8 +182,10 @@ var TaskScene = Class.create(Scene, {
 	 * @memberof TaskScene
 	 */
 	existTask: function() {
-		game.smallMessage({
-			message: 'おお　こんなにんむが<br/>あったようじゃ',
+		game.message({
+			html: 'exist_task',
+			close: 'touch',
+			caller: this,
 			callback: this.showRandomTask
 		});
 	},
@@ -209,7 +206,6 @@ var TaskScene = Class.create(Scene, {
 	 */
 	showRandomTask: function() {
 		var task = this._tasks[Math.floor(Math.random() * this._tasks.length)];
-		var message = task.key + '<br/>' + task.created_on + '<br/>' + task.components + '<br/>' + task.status + '<br/>' + task.assigner + '<br/>' + task.description;
 		
 		$('#task_title').html(task.summary);
 		$('#task_key').html(task.key);
@@ -219,11 +215,11 @@ var TaskScene = Class.create(Scene, {
 		$('#task_assigner').html(task.assigner);
 		$('#task_description').html(task.description);
 		
-		game.largeMessage({
-			title: '',
-			message: '',
-			form: 'task',
-			callback: this.youCanDo
+		game.message({
+			html: 'task',
+			close: 'touch',
+			callback: this.canYouDo,
+			caller: this
 		});
 	},
 	
@@ -232,10 +228,11 @@ var TaskScene = Class.create(Scene, {
 	 * @method
 	 * @memberof TaskScene
 	 */
-	youCanDo: function() {
-		game.smallMessage({
-			message: 'どうじゃ？<br/>ひきうけて　くれるかの？',
-			confirm: true,
+	canYouDo: function() {
+		game.message({
+			html: 'can_you_do',
+			close: 'answer',
+			caller: this,
 			callback: function(answer) {
 				if(answer) {
 					this.fix();
@@ -252,10 +249,12 @@ var TaskScene = Class.create(Scene, {
 	 * @memberof TaskScene
 	 */
 	nextTask: function() {
-		game.smallMessage({
-			message: 'そうか　それでは<br/>こちらのにんむは　どうじゃ？',
+		game.message({
+			html: 'next_task',
+			close: 'touch',
+			caller: this,
 			callback: this.showRandomTask
-		})
+		});
 	},
 	
 	/**
@@ -264,8 +263,10 @@ var TaskScene = Class.create(Scene, {
 	 * @memberof TaskScene
 	 */
 	fix: function() {
-		game.smallMessage({
-			message: 'そうか！　たのんだぞ<br/>そなたのぼうけんは<br/>まだまだ　つづくのじゃ！',
+		game.message({
+			html: 'fix_task',
+			close: 'touch',
+			caller: this,
 			callback: this.exit
 		});
 	},

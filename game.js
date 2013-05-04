@@ -64,7 +64,6 @@ var Game = Class.create(Core, {
 	 * @memberof Game
 	 * @param {object} config 設定項目
 	 * {
-	 *     size: 'large'なら大きなウィンドウ、'small'なら小さなウィンドウ
 	 *     html: 表示するHTMLタグのid
 	 *     close: ウィンドウを閉じる方法
 	 *         'touch': 画面をタッチしたら閉じる、通常メッセージで使う
@@ -86,7 +85,9 @@ var Game = Class.create(Core, {
 		var close = function() {
 			html.css('z-index', 0);
 			$('#yes').css('z-index', 0);
-			$('#no').css('z-index', 0)
+			$('#yes').unbind('click');
+			$('#no').css('z-index', 0);
+			$('#no').unbind('click');
 		};
 		
 		if(config.close == 'touch') {
