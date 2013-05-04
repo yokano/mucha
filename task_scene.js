@@ -116,7 +116,7 @@ var TaskScene = Class.create(Scene, {
 			caller: this,
 			callback: function(answer) {
 				if(answer) {
-					this.setDetail();
+					this.setCondition();
 				} else {
 					this.searchTask();
 				}
@@ -129,8 +129,15 @@ var TaskScene = Class.create(Scene, {
 	 * @method
 	 * @memberof TaskScene
 	 */
-	setDetail: function() {
-		console.log('詳細条件の設定');
+	setCondition: function() {
+		game.message({
+			html: 'set_condition',
+			close: 'button',
+			caller: this,
+			callback: function() {
+				console.log('検索');
+			}
+		});
 	},
 	
 	/**

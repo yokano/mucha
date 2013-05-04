@@ -146,3 +146,8 @@ a {
 	font: "15px serif";
 	word-break: break-all;
 }
+
+/* 検索条件 */
+#set_condition div {
+	margin-bottom: 20px;
+}
