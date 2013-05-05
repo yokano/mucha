@@ -130,6 +130,35 @@ var TaskScene = Class.create(Scene, {
 	 * @memberof TaskScene
 	 */
 	setCondition: function() {
+		var self = this;
+		game.startLoading();
+		$.ajax('/backlog', {
+			data: {
+				method: 'get_issue_types',
+				project: self._selectedProject,
+				id: game.id,
+				pass: game.pass,
+				space: game.space
+			},
+			async: false,
+			dataType: 'json',
+			error: function() {
+				console.log('api error');
+			},
+			success: function(issueTypes) {
+				var select = $('.issue_type>select');
+				console.log(select);
+				for(var i = 0; i < issueTypes.length; i++) {
+					$('<option></option>').html(issueTypes[i].name).val(issueTypes[i].id).appendTo(select);
+				}
+			},
+			complete: function() {
+				game.stopLoading();
+			}
+		});
+		
+		
+		
 		game.message({
 			html: 'set_condition',
 			close: 'button',
