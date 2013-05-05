@@ -131,6 +131,9 @@ var TaskScene = Class.create(Scene, {
 	 */
 	setCondition: function() {
 		var self = this;
+		
+		// 選択肢の準備
+		// タスクの種類
 		game.startLoading();
 		$.ajax('/backlog', {
 			data: {
@@ -147,9 +150,34 @@ var TaskScene = Class.create(Scene, {
 			},
 			success: function(issueTypes) {
 				var select = $('.issue_type>select');
-				console.log(select);
 				for(var i = 0; i < issueTypes.length; i++) {
 					$('<option></option>').html(issueTypes[i].name).val(issueTypes[i].id).appendTo(select);
+				}
+			},
+			complete: function() {
+				game.stopLoading();
+			}
+		});
+		
+		// カテゴリ
+		game.startLoading()
+		$.ajax('/backlog', {
+			data: {
+				method: 'get_components',
+				project: self._selectedProject,
+				id: game.id,
+				pass: game.pass,
+				space: game.space
+			},
+			async: false,
+			dataType: 'json',
+			error: function() {
+				console.log('カテゴリの取得に失敗しました');
+			},
+			success: function(components) {
+				var select = $('.component>select');
+				for(var i = 0; i < components.length; i++) {
+					$('<option></option>').html(components[i].name).val(components[i].id).appendTo(select);
 				}
 			},
 			complete: function() {
