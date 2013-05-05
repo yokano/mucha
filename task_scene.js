@@ -134,7 +134,6 @@ var TaskScene = Class.create(Scene, {
 		
 		// 選択肢の準備
 		// タスクの種類
-		game.startLoading();
 		$.ajax('/backlog', {
 			data: {
 				method: 'get_issue_types',
@@ -146,21 +145,17 @@ var TaskScene = Class.create(Scene, {
 			async: false,
 			dataType: 'json',
 			error: function() {
-				console.log('api error');
+				console.log('タスクの種類の取得に失敗しました');
 			},
 			success: function(issueTypes) {
 				var select = $('.issue_type>select');
 				for(var i = 0; i < issueTypes.length; i++) {
 					$('<option></option>').html(issueTypes[i].name).val(issueTypes[i].id).appendTo(select);
 				}
-			},
-			complete: function() {
-				game.stopLoading();
 			}
 		});
 		
 		// カテゴリ
-		game.startLoading()
 		$.ajax('/backlog', {
 			data: {
 				method: 'get_components',
@@ -179,13 +174,30 @@ var TaskScene = Class.create(Scene, {
 				for(var i = 0; i < components.length; i++) {
 					$('<option></option>').html(components[i].name).val(components[i].id).appendTo(select);
 				}
-			},
-			complete: function() {
-				game.stopLoading();
 			}
 		});
 		
-		
+		// 状態
+		$.ajax('/backlog', {
+			data: {
+				method: 'get_statuses',
+				project: self._selectedProject,
+				id: game.id,
+				pass: game.pass,
+				space: game.space
+			},
+			async: false,
+			dataType: 'json',
+			error: function() {
+				console.log('状態の取得に失敗しました');
+			},
+			success: function(statuses) {
+				var select = $('.status>select');
+				for(var i = 0; i < statuses.length; i++) {
+					$('<option></option>').html(statuses[i].name).val(statuses[i].name).appendTo(select);
+				}
+			}
+		});
 		
 		game.message({
 			html: 'set_condition',
