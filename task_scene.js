@@ -199,6 +199,29 @@ var TaskScene = Class.create(Scene, {
 			}
 		});
 		
+		// 担当者
+		$.ajax('/backlog', {
+			data: {
+				method: 'get_users',
+				project: self._selectedProject,
+				id: game.id,
+				pass: game.pass,
+				space: game.space
+			},
+			async: false,
+			dataType: 'json',
+			error: function() {
+				console.log('ユーザの取得に失敗しました');
+			},
+			success: function(users) {
+				var select = $('.assigner>select');
+				for(var i = 0; i < users.length; i++) {
+					$('<option></option>').html(users[i].name).val(users[i].id).appendTo(select);
+				}
+			}
+		});
+		
+		// 条件設定ウィンドウを表示
 		game.message({
 			html: 'set_condition',
 			close: 'button',
