@@ -228,6 +228,7 @@ var TaskScene = Class.create(Scene, {
 			caller: this,
 			callback: function() {
 				console.log('検索');
+				$('#set_condition select').empty();
 			}
 		});
 	},

@@ -149,5 +149,21 @@ a {
 
 /* 検索条件 */
 #set_condition div {
-	margin-bottom: 20px;
+	position: absolute;
+}
+.issue_type {
+	left: 0px;
+	top: 200px;
+}
+.component {
+	left: 0px;
+	top: 0px;
+}
+.status {
+	left: 0px;
+	top: 100px;
+}
+.assigner {
+	left: 150px;
+	top: 100px;
 }
