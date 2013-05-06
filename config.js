@@ -13,5 +13,6 @@ var resources = [
 	'/mucha/mini_button.png',
 	'/mucha/end.png',
 	'/mucha/fire.png',
-	'/mucha/mucha.png'
+	'/mucha/mucha.png',
+	'/mucha/fullscreen.png'
 ];

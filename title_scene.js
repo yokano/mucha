@@ -12,6 +12,16 @@ var TitleScene = Class.create(Scene, {
 	initialize: function() {
 		Scene.call(this);
 		
+		// iOSかつフルスクリーンでなければフルスクリーンを促す
+		if(navigator.standalone === false) {
+			var background = new Sprite();
+			background.image = game.assets['/mucha/fullscreen.png'];
+			background.width = background.image.width;
+			background.height = background.image.height;
+			this.addChild(background);
+			return;
+		}
+		
 		var background = new Sprite();
 		background.image = game.assets['/mucha/title.png'];
 		background.width = background.image.width;
