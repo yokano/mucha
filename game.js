@@ -97,7 +97,7 @@ var Game = Class.create(Core, {
 			});
 		} else if(config.close == 'button') {
 			// フォームのボタンを押したら閉じる
-			html.find('.close_button').bind('click', function() {
+			html.find('.close_button').off('click').on('click', function() {
 				if(!config.check || game.checkForm(html)) {
 					close();
 					config.callback.call(config.caller, game.getForm(html));
