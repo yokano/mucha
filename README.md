@@ -1,10 +1,11 @@
 ムチャブリBacklog
 =====
 
-Backlog ランダムにタスクを無茶振りしてくるアプリ
-
 勇者となって王様からBacklogのタスクをムチャブリしてもらえるWebアプリ。  
 PCでもスマートフォンでも動作します。  
+以下のURLを開くとアプリが起動します。  
+URL: [http://okanoworld.appspot.com/mucha](http://okanoworld.appspot.com/mucha)  
+  
 ![https://raw.github.com/yokano/mucha/master/ss/ss03.png](https://raw.github.com/yokano/mucha/master/ss/ss03.png)
   
 Backlogに登録されているタスクの中から、  
