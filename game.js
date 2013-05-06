@@ -45,7 +45,6 @@ var Game = Class.create(Core, {
 	 */
 	onload: function() {
 		this.changeScene(TitleScene);
-//		this.changeScene(TaskScene);
 	},
 	
 	/**

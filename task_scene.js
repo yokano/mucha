@@ -407,7 +407,7 @@ var TaskScene = Class.create(Scene, {
 	 */
 	exit: function() {
 		this._brave.go(function() {
-			game.changeScene(TitleScene);
+			game.changeScene(EndScene);
 		});
 	}
 });
