@@ -20,6 +20,19 @@ var LoginScene = Class.create(Scene, {
 	 * @memberof LoginScene
 	 */
 	onenter: function() {
+		
+		// ログイン情報の復元
+		if(localStorage != undefined) {
+			var space = localStorage.getItem('backlogSpace');
+			var id = localStorage.getItem('backlogID');
+			var pass = localStorage.getItem('backlogPass');
+			if(space != undefined && id != undefined && pass != undefined) {
+				$('#space').val(space);
+				$('#id').val(id);
+				$('#pass').val(pass);
+			}
+		}
+		
 		game.message({
 			html: 'login_form',
 			close: 'button',
@@ -85,6 +98,21 @@ var LoginScene = Class.create(Scene, {
 					game.id = config.id;
 					game.pass = config.pass;
 					game.space = config.space;
+
+					// ログイン情報をローカルに保存
+					if(localStorage != undefined) {
+						var checked = $('#storage').is(':checked');
+						if(checked) {
+							localStorage.setItem('backlogSpace', game.space);
+							localStorage.setItem('backlogID', game.id);
+							localStorage.setItem('backlogPass', game.pass);
+						} else {
+							localStorage.setItem('backlogSpace', '');
+							localStorage.setItem('backlogID', '');
+							localStorage.setItem('backlogPass', '');
+						}
+					}
+					
 					result = true;
 				}
 			},
