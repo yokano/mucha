@@ -155,7 +155,11 @@ var Game = Class.create(Core, {
 		}
 		for(var i = 0; i < selects.length; i++) {
 			var select = $(selects[i]);
-			result[select.attr('id')] = select.find('option:selected').val();
+			if(select.attr('multiple') == undefined) {
+				result[select.attr('id')] = select.find('option:selected').val();
+			} else {
+				result[select.attr('id')] = select.val();
+			}
 		}
 		return result;
 	},

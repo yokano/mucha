@@ -194,7 +194,7 @@ var TaskScene = Class.create(Scene, {
 			success: function(statuses) {
 				var select = $('.status>select');
 				for(var i = 0; i < statuses.length; i++) {
-					$('<option></option>').html(statuses[i].name).val(statuses[i].name).appendTo(select);
+					$('<option></option>').html(statuses[i].name).val(statuses[i].id).appendTo(select);
 				}
 			}
 		});
@@ -226,9 +226,9 @@ var TaskScene = Class.create(Scene, {
 			html: 'set_condition',
 			close: 'button',
 			caller: this,
-			callback: function() {
-				console.log('検索');
+			callback: function(conditions) {
 				$('#set_condition select').empty();
+				this.searchTask(conditions);
 			}
 		});
 	},
@@ -237,9 +237,29 @@ var TaskScene = Class.create(Scene, {
 	 * タスクを検索している時の表示
 	 * @method
 	 * @memberof TaskScene
+	 * @param {object} conditions タスクの検索条件
 	 */
-	searchTask: function() {
+	searchTask: function(conditions) {
 		var self = this;
+		if(conditions == undefined) {
+			conditions = {
+				'issue_type': [],
+				'component': [],
+				'status': [],
+				'assigner': []
+			};
+		}
+		
+		// データ送信のため配列を文字列へ変換
+		for(var i in conditions) {
+			if(conditions[i] == null || conditions[i].length == 0) {
+				conditions[i] = '';
+			} else if(conditions[i].length == 1) {
+				conditions[i] = conditions[i][0];
+			} else if(conditions[i].length > 1) {
+				conditions[i] = conditions[i].join();
+			}
+		}
 		
 		game.message({
 			html: 'searching',
@@ -254,7 +274,10 @@ var TaskScene = Class.create(Scene, {
 				pass: game.pass,
 				space: game.space,
 				project: self._selectedProject,
-				status: [1, 2, 3]
+				issue_type: conditions.issue_type,
+				component: conditions.component,
+				status: conditions.status,
+				assigner: conditions.assigner
 			},
 			dataType: 'json',
 			error: function() {
@@ -262,6 +285,7 @@ var TaskScene = Class.create(Scene, {
 				self.noTask();
 			},
 			success: function(result) {
+				console.log(result);
 				if(result.length > 0) {
 					self._tasks = result;
 					self.existTask();
