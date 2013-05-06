@@ -285,7 +285,6 @@ var TaskScene = Class.create(Scene, {
 				self.noTask();
 			},
 			success: function(result) {
-				console.log(result);
 				if(result.length > 0) {
 					self._tasks = result;
 					self.existTask();
@@ -320,7 +319,12 @@ var TaskScene = Class.create(Scene, {
 	 * @memberof TaskScene
 	 */
 	noTask: function() {
-		
+		game.message({
+			html: 'no_task',
+			close: 'touch',
+			caller: this,
+			callback: this.exit
+		});
 	},
 	
 	/**
